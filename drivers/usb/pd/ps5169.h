@@ -28,7 +28,11 @@ struct ps5169_info {
 	int                         flip;
 };
 
+#if IS_ENABLED(CONFIG_PS5169)
 void ps5169_cfg_usb(void);
+#else
+static inline void ps5169_cfg_usb(void) {}
+#endif
 
 #endif
 
