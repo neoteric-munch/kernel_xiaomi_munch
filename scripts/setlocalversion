@@ -77,27 +77,11 @@ scm_version()
 				echo "+"
 				return
 			fi
-		else
-			# Use seven hex characters, independent of tags and core.abbrev.
-			printf -- '-%.7s' "$head"
 		fi
 
 		# Is this git on svn?
 		if git config --get svn-remote.svn.url >/dev/null; then
 			printf -- '-svn%s' "`git svn find-rev $head`"
-		fi
-
-		# Check for uncommitted changes.
-		# First, with git-status, but --no-optional-locks is only
-		# supported in git >= 2.14, so fall back to git-diff-index if
-		# it fails. Note that git-diff-index does not refresh the
-		# index, so it may give misleading results. See
-		# git-update-index(1), git-diff-index(1), and git-status(1).
-		if {
-			git --no-optional-locks status -uno --porcelain 2>/dev/null ||
-			git diff-index --name-only HEAD
-		} | grep -qvE '^(.. )?scripts/package'; then
-			printf '%s' -dirty
 		fi
 
 		# All done with git
@@ -196,11 +180,6 @@ else
 		scm=$(scm_version --short)
 		res="$res${scm:++}"
 	fi
-fi
-
-# Keep the maintained CIP revision after the Redline name and commit.
-if test -e "$srctree/localversion-cip"; then
-	res="$res$(cat "$srctree/localversion-cip")"
 fi
 
 echo "$res"
