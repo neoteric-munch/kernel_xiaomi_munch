@@ -4037,6 +4037,13 @@ static void aw86927_rtp_work_routine(struct work_struct *work)
 			release_firmware(rtp_file);
 		} else {
 			vfree(aw86927_rtp);
+			aw86927_rtp = NULL;
+			if (!(aw86927->ram.base_addr >> 2)) {
+				aw_err("%s: ram is not loaded yet\n", __func__);
+				pm_relax(aw86927->dev);
+				mutex_unlock(&aw86927->lock);
+				return;
+			}
 			aw86927_rtp = vmalloc(aw86927->ram.base_addr >> 2);
 			if (!aw86927_rtp) {
 				aw_err("%s: error allocating memory\n",
