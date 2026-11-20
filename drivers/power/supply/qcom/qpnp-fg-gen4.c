@@ -2214,7 +2214,10 @@ static int fg_gen4_get_batt_profile(struct fg_dev *fg)
 	struct fg_gen4_chip *chip = container_of(fg, struct fg_gen4_chip, fg);
 	struct device_node *node = fg->dev->of_node;
 	struct device_node *batt_node, *profile_node;
-	const char *data, *fallback_type;
+	const char *data;
+#ifdef CONFIG_BATT_VERIFY_BY_DS28E16
+	const char *fallback_type;
+#endif
 	bool replacement_fallback = false;
 	int rc, len, avail_age_level = 0;
 
